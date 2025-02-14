@@ -1,0 +1,33 @@
+**Notes so I don't forget**
+
+Housing/Rental
+    - Might need to reformat price data, not sure if it will do that automatically upon loading
+    - Keep state name?
+    - Rename any of the other columns?
+
+
+
+Population
+    - Rename the population columns?
+
+
+Wildfire
+    - Need to adjust State and/or Place code
+
+
+
+Loading into SQL
+    - How to write the code so this can be updated properly each month?
+    - How to add new column for census/population data when it updates?
+
+
+Locations Table
+
+
+Extras
+    - Trigger for every month (since new housing data comes out each month)
+    - How to make it scale?
+
+
+Limitations/future expansions
+    - Include all states
