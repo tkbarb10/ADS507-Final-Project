@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS locations (
 
 ```sql
 CREATE TABLE IF NOT EXISTS wildfire (
-    object_id int PRIMARY KEY, -- included with the wildfire data
+    fire_id int PRIMARY KEY, -- included with the wildfire data
     location_id INT NOT NULL,
     fire_name VARCHAR(20), --Lot of unknowns in this feature and a lot of repeats (like 'Grass fire') better to just delete?
     discovery_date date,
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS housing (
     state_name CHAR(2) NOT NULL, --Redundant?
     region_name VARCHAR(40), 
     county_name VARCHAR(20),
-    eval_date date, --this will be the date the housing price was assessed
+    assessment_date date, --this will be the date the housing price was assessed
     price DECIMAL(10, 2),
     FOREIGN KEY (location_id) REFERENCES locations(location_id)
 );
@@ -59,13 +59,13 @@ CREATE TABLE IF NOT EXISTS housing (
 
 ```sql
 CREATE TABLE IF NOT EXISTS rentals (
-    rent_id INT AUTO_INCREMENT PRIMARY KEY,
+    rent_price_id INT AUTO_INCREMENT PRIMARY KEY,
     location_id INT NOT NULL,
     state_id INT NOT NULL, --Will need this to be a foreign key
     state_name CHAR(2) NOT NULL,
     region_name VARCHAR(40),
     county_name VARCHAR(40),
-    eval_date DATE,
+    assessment_date DATE,
     price DECIMAL (10,2),
     FOREIGN KEY (location_id) REFERENCES locations(location_id)
 );
@@ -76,11 +76,11 @@ CREATE TABLE IF NOT EXISTS rentals (
 # Create Population Table
 
 ```sql
-CREATE TABLE IF NOT EXISTS census_data (
+CREATE TABLE IF NOT EXISTS census (
     places_id INT PRIMARY KEY,
     location_id INT NOT NULL,
     county_name VARCHAR(40),
-    census_2010 INT CHECK (census_2010 >= 0), --need to make sure the A values get ignored or replaced with Null
+    true_pop_2010 INT CHECK (census_2010 >= 0), --need to make sure the A values get ignored or replaced with Null
     pop_estimate_2011 INT,
     pop_estimate_2012 INT,
     pop_estimate_2013 INT,
