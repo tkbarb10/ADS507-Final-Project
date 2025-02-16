@@ -27,6 +27,7 @@ Locations Table
 Extras
     - Trigger for every month (since new housing data comes out each month)
     - How to make it scale?
+    - Hide password and cert
 
 
 Limitations/future expansions
