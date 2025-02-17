@@ -6,18 +6,18 @@
 CREATE DATABASE IF NOT EXISTS wildfire_housing
 ```
 
-# Create places table
+# Create locations table
 
 ```sql
 CREATE TABLE IF NOT EXISTS locations (
-    location_id INT AUTO_INCREMENT PRIMARY KEY,  -- Unique identifier for locations
-    state_name CHAR(2) NOT NULL,
     state_id INT NOT NULL,
-    county_id INT NOT NULL,
-    county_name VARCHAR(40),
-    places_id INT NOT NULL,
-    place_name VARCHAR(50),                      -- City/Town/Village Name
-    UNIQUE (state_id, county_name, place_name)    -- Prevents duplicate locations
+    county_id INT NOT NULL DEFAULT 0,
+    place_id INT NOT NULL DEFAULT 0,
+    PRIMARY KEY (state_id, county_id, place_id),
+    state_name CHAR(2) NOT NULL,
+    county_name VARCHAR(50) NOT NULL,
+    place_name VARCHAR(50) NULL,
+    UNIQUE (state_id, county_id, place_name)
 );
 
 ```
@@ -26,16 +26,18 @@ CREATE TABLE IF NOT EXISTS locations (
 
 ```sql
 CREATE TABLE IF NOT EXISTS wildfire (
-    fire_id int PRIMARY KEY, -- included with the wildfire data
-    location_id INT NOT NULL,
-    fire_name VARCHAR(20), --Lot of unknowns in this feature and a lot of repeats (like 'Grass fire') better to just delete?
-    discovery_date date,
-    cause VARCHAR(20), --we have two, one that's general and one specific, probably will just keep one
-    state_id INT, --foreign key
+    fire_id INT PRIMARY KEY,
+    state_id INT NOT NULL,
     state_name CHAR(2),
-    county_name VARCHAR(20),
-    FOREIGN KEY (location_id) REFERENCES locations(location_id)
+    county_id INT,
+    county_name VARCHAR(50),
+    fire_name VARCHAR(50),
+    fire_size DECIMAL(10, 2),
+    discovery_date DATE,
+    cause VARCHAR(50),
+    FOREIGN KEY (state_id, county_id) REFERENCES locations(state_id, county_id)
 );
+
 ```
 
 
@@ -43,16 +45,17 @@ CREATE TABLE IF NOT EXISTS wildfire (
 
 ```sql
 CREATE TABLE IF NOT EXISTS housing (
-    price_id INT AUTO_INCREMENT PRIMARY KEY, --Auto_incrementing for each new record since a new one will be added each month with updated price
-    location_id INT NOT NULL,
-    state_id INT NOT NULL, --Will need to make this a foreign_key
-    state_name CHAR(2) NOT NULL, --Redundant?
-    region_name VARCHAR(40), 
-    county_name VARCHAR(20),
-    assessment_date date, --this will be the date the housing price was assessed
+    price_id INT AUTO_INCREMENT PRIMARY KEY,
+    state_id INT NOT NULL,
+    state_name CHAR(2) NOT NULL,
+    county_id INT NOT NULL,
+    county_name VARCHAR(50),
+    region_name VARCHAR(50),
+    assessment_date DATE,
     price DECIMAL(10, 2),
-    FOREIGN KEY (location_id) REFERENCES locations(location_id)
+    FOREIGN KEY (state_id, county_id) REFERENCES locations(state_id, county_id)
 );
+
 ```
 
 # Create Rentals Table
@@ -60,14 +63,14 @@ CREATE TABLE IF NOT EXISTS housing (
 ```sql
 CREATE TABLE IF NOT EXISTS rentals (
     rent_price_id INT AUTO_INCREMENT PRIMARY KEY,
-    location_id INT NOT NULL,
-    state_id INT NOT NULL, --Will need this to be a foreign key
+    state_id INT NOT NULL,
     state_name CHAR(2) NOT NULL,
-    region_name VARCHAR(40),
-    county_name VARCHAR(40),
+    county_id INT NOT NULL,
+    county_name VARCHAR(50),
+    region_name VARCHAR(50),
     assessment_date DATE,
-    price DECIMAL (10,2),
-    FOREIGN KEY (location_id) REFERENCES locations(location_id)
+    price DECIMAL(10, 2),
+    FOREIGN KEY (state_id, county_id) REFERENCES locations(state_id, county_id)
 );
 ```
 
@@ -77,10 +80,10 @@ CREATE TABLE IF NOT EXISTS rentals (
 
 ```sql
 CREATE TABLE IF NOT EXISTS census (
-    places_id INT PRIMARY KEY,
-    location_id INT NOT NULL,
-    county_name VARCHAR(40),
-    true_pop_2010 INT CHECK (census_2010 >= 0), --need to make sure the A values get ignored or replaced with Null
+    state_id INT NOT NULL,
+    county_id INT NOT NULL,
+    place_id INT NOT NULL DEFAULT 0,
+    true_pop_2010 INT CHECK (true_pop_2010 >= 0),
     pop_estimate_2011 INT,
     pop_estimate_2012 INT,
     pop_estimate_2013 INT,
@@ -90,6 +93,7 @@ CREATE TABLE IF NOT EXISTS census (
     pop_estimate_2017 INT,
     pop_estimate_2018 INT,
     pop_estimate_2019 INT,
-    FOREIGN KEY (location_id) REFERENCES locations(location_id)
+    FOREIGN KEY (state_id, county_id, place_id) REFERENCES locations(state_id, county_id, place_id),
+    UNIQUE (state_id, county_id, place_id)
 );
 ```
