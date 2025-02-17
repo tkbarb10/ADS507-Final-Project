@@ -169,3 +169,8 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Ignore SSL certs
+
+"/DigiCertGlobalRootCA.crt (1).pem"
+*.pem
