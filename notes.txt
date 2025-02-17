@@ -28,6 +28,7 @@ Extras
     - Trigger for every month (since new housing data comes out each month)
     - How to make it scale?
     - Hide password and cert
+    - progress apply bar/more efficient way to map county id's
 
 
 Limitations/future expansions
